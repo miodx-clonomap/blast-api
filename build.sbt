@@ -1,11 +1,9 @@
 name         := "blast-api"
-organization := "ohnosequences"
+organization := "com.miodx.clonomap"
 version      := "0.11.1"
 description  := "A typesafe Scala BLAST API"
 bucketSuffix := "era7.com"
-
-crossScalaVersions := Seq("2.11.11", "2.12.3")
-scalaVersion := crossScalaVersions.value.max
+scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
   "com.miodx.common"     %% "cosas"     % "0.10.1",
