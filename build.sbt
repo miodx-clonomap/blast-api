@@ -1,11 +1,12 @@
 name          := "blast-api"
-organization  := "ohnosequences"
+organization  := "com.miodx.clonomap"
+version       := "0.10.0"
 description   := "A typesafe Scala BLAST API"
-
+scalaVersion  := "2.11.11"
 bucketSuffix  := "era7.com"
 
 libraryDependencies ++= Seq(
-  "ohnosequences"         %% "cosas"        % "0.8.0",
+  "com.miodx.common"      %% "cosas"        % "0.10.1",
   "com.github.tototoshi"  %% "scala-csv"    % "1.3.4" % Test
 )
 
