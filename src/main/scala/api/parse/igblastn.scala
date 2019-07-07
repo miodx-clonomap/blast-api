@@ -1,8 +1,16 @@
 package ohnosequences.blast.api.parse
 
-import ohnosequences.blast.api._, ohnosequences.blast.api.igblastn.output._
+import java.util.logging.Logger
+
+import ohnosequences.blast.api._
+import ohnosequences.blast.api.igblastn.output._
 import ohnosequences.blast.api.outputFields._
-import ohnosequences.cosas._, types._, klists._, records._
+import ohnosequences.cosas._
+import types._
+import klists._
+import records._
+
+import scala.util.Try
 
 /*
   # IgBLAST output structure
@@ -25,6 +33,8 @@ import ohnosequences.cosas._, types._, klists._, records._
   The essential bit here is the query ID: the line which starts with `# Query: `. If we take the query ID from the hit table (see below) we could forget about this header; that would be good.
 */
 case object igblastn {
+
+  def logger: Logger = Logger.getLogger(getClass.getName)
 
   type Line   = String
   type Field  = String
@@ -356,6 +366,19 @@ case object igblastn {
 
   case object Clonotype {
 
+    def getNumberOfReads(read: String): Option[Int] = {
+      val reads: Array[String] = read.split(':')
+      Try{
+        reads(2).toInt
+      }.recoverWith{
+        case t =>
+        // logger.warning("") //  too many errors
+          Try{
+            reads(1).toInt
+          }
+      }.toOption // Ignore
+    }
+
     def fromSeq(fields: Seq[String]): Option[Clonotype] = {
       if(fields.length != 7) None
       else Some {
@@ -365,7 +388,7 @@ case object igblastn {
         // In CCGAG:TGTGCTATGTTGAGGT:3:0.047884850241877504 first number
         // is the number of reads    ^
         val readsCount: Int =
-          querySeqs.map { _.split(':')(2).toInt }.sum
+          querySeqs.flatMap(getNumberOfReads).sum
 
         Clonotype(
           id              = fields(0),
